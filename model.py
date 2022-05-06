@@ -85,6 +85,9 @@ class Agent:
     def save_weights(self, weights_file):
         self.model.save_weights(weights_file)
 
+    def save_model(self, model_file):
+        self.model.save(model_file)
+
 
 if __name__ == "__main__":
 
@@ -92,7 +95,7 @@ if __name__ == "__main__":
     env = gym.make('LunarLander-v2') #uzimanje enviromenta
 
     # Defines training related constants
-    n_episodes = 220
+    n_episodes = 2
     num_episode_steps = env.spec.max_episode_steps  # constant value
     action_size = env.action_space.n
     state_space = env.observation_space.shape[0]
@@ -155,9 +158,12 @@ if __name__ == "__main__":
             #agent.save_weights("lunar_lander_weights.h5")
             max_reward = total_reward
 
+    #save model
+    agent.save_model('model.h5')
+
     #save model in pickle file
-    with open('model_pickle', 'wb') as f:
-        pickle.dump(agent, f)
+    #with open('model_pickle', 'wb') as f:
+    #    pickle.dump(agent, f)
 
     # Closes the environment
     env.close()

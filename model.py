@@ -1,12 +1,12 @@
-import pickle
-import os
 import random
+import os
 from collections import deque
 
 import gym
+import keras as keras
+from tensorflow import keras
 import numpy as np
-from sqlalchemy import PickleType
-from tensorflow.keras.models import Sequential, clone_model
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
 
@@ -104,9 +104,12 @@ if __name__ == "__main__":
     # Creates an agent
     agent = Agent(state_space=state_space, action_size=action_size)
 
+    if os.path.isfile("C:/Users/lukav/OneDrive/Documents/Završni rad/LunarLanderGH/AILunarLander/model.h5"):
+        agent.model = keras.models.load_model('model.h5')
+
     # Loads the weights
     #if os.path.isfile("C:/Users/lukav/OneDrive/Documents/Završni rad/LunarLanderGH/AILunarLander/lunar_lander.h5"):
-    agent.load_weights("lunar_lander_weights.h5")
+    # agent.load_weights("lunar_lander_weights.h5")
 
     for episode in range(n_episodes):
         # Defines the total reward per episode

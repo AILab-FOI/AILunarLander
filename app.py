@@ -19,5 +19,6 @@ def get_action(state: Env_variables):
     action = agent.act(state)
     return action
 
+
 if __name__ == "__main__":
     app.run(debug=True)

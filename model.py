@@ -6,7 +6,7 @@ import gym
 import keras as keras
 from tensorflow import keras
 import numpy as np
-from tensorflow.keras.models import Sequential
+from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
 
@@ -77,14 +77,6 @@ class Agent:
             verbose=0
         )
 
-
-    def load_weights(self, weights_file):
-        self.epsilon = self.epsilon_min
-        self.model.load_weights(weights_file, by_name=True)
-
-    def save_weights(self, weights_file):
-        self.model.save_weights(weights_file)
-
     def save_model(self, model_file):
         self.model.save(model_file)
 
@@ -92,10 +84,10 @@ class Agent:
 if __name__ == "__main__":
 
     # Initializes the environment
-    env = gym.make('LunarLander-v2') #uzimanje enviromenta
+    env = gym.make('LunarLander-v2')  # uzimanje enviromenta
 
     # Defines training related constants
-    n_episodes = 2
+    n_episodes = 5
     num_episode_steps = env.spec.max_episode_steps  # constant value
     action_size = env.action_space.n
     state_space = env.observation_space.shape[0]
@@ -104,12 +96,9 @@ if __name__ == "__main__":
     # Creates an agent
     agent = Agent(state_space=state_space, action_size=action_size)
 
-    if os.path.isfile("C:/Users/lukav/OneDrive/Documents/Završni rad/LunarLanderGH/AILunarLander/model.h5"):
-        agent.model = keras.models.load_model('model.h5')
-
-    # Loads the weights
-    #if os.path.isfile("C:/Users/lukav/OneDrive/Documents/Završni rad/LunarLanderGH/AILunarLander/lunar_lander.h5"):
-    # agent.load_weights("lunar_lander_weights.h5")
+    if os.path.exists("saved_model"):
+        agent.model = keras.models.load_model('saved_model')
+        print('model_loaded')
 
     for episode in range(n_episodes):
         # Defines the total reward per episode
@@ -156,17 +145,12 @@ if __name__ == "__main__":
         # Updates the epsilon value
         agent.epsilon = max(agent.epsilon_min, agent.epsilon * agent.epsilon_decay)
 
-        #Saves the network weights
+        # Saves the network weights
         if total_reward >= max_reward:
-            #agent.save_weights("lunar_lander_weights.h5")
             max_reward = total_reward
 
-    #save model
-    agent.save_model('model.h5')
-
-    #save model in pickle file
-    #with open('model_pickle', 'wb') as f:
-    #    pickle.dump(agent, f)
+    # save model
+    # agent.save_model('saved_model')
 
     # Closes the environment
     env.close()

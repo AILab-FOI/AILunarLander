@@ -1,24 +1,24 @@
-from unicodedata import decimal
+import os
+from typing import List
+
 from fastapi import FastAPI
-from tensorflow.keras.models import load_model
+from tensorflow import keras
 from pydantic import BaseModel
 
-import model
+import model_training
 
-app=FastAPI()
+app = FastAPI()
 
 class Env_variables(BaseModel):
     variables: list[float] = []
 
 
-agent = model.Agent(state_space=8, action_size=4)
-agent.model = load_model('model.h5')
+agent = model_training.Agent(state_space=8, action_size=4)
+if os.path.exists("saved_model"):
+    agent.model = keras.models.load_model('saved_model')
 
 @app.post('/action')
-def get_action(state: Env_variables):
+def get_action(state: List[Env_variables]):
     action = agent.act(state)
-    return action
+    return {'action': action}
 
-
-if __name__ == "__main__":
-    app.run(debug=True)

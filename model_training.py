@@ -3,7 +3,6 @@ import os
 from collections import deque
 
 import gym
-import keras as keras
 from tensorflow import keras
 import numpy as np
 from tensorflow.keras import Sequential
@@ -87,7 +86,7 @@ if __name__ == "__main__":
     env = gym.make('LunarLander-v2')  # uzimanje enviromenta
 
     # Defines training related constants
-    n_episodes = 5
+    n_episodes = 300
     num_episode_steps = env.spec.max_episode_steps  # constant value
     action_size = env.action_space.n
     state_space = env.observation_space.shape[0]
@@ -150,7 +149,7 @@ if __name__ == "__main__":
             max_reward = total_reward
 
     # save model
-    # agent.save_model('saved_model')
+    agent.save_model('saved_model')
 
     # Closes the environment
     env.close()

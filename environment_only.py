@@ -1,7 +1,5 @@
 import requests
-import json
 
-import numpy as np
 import gym
 
 
@@ -24,25 +22,20 @@ if __name__ == "__main__":
         # Resets the environment
         observation = env.reset()
 
-        # Gets the state
-        state = np.reshape(observation, [1, state_space])
-
         for episode_step in range(num_episode_steps):
             # Renders the screen after new environment observation
             env.render(mode="human")
 
             # Gets a new action
-            data = state.tolist()
+            data = {'variables': observation.tolist()}
 
-            action = requests.post(URL, json=data)
+            response = requests.post(URL, json=data)
+            action = int(response.content)
             print(action)
 
             # Takes action and calculates the total reward
             observation, reward, done, _ = env.step(action)
             total_reward += reward
-
-            # Updates the state
-            state = np.reshape(observation, [1, state_space])
 
             if done:
                 print("Episode %d/%d finished after %d steps with total reward of %f."
@@ -52,4 +45,3 @@ if __name__ == "__main__":
             elif episode_step >= num_episode_steps - 1:
                 print("Episode %d/%d timed out at %d with total reward of %f."
                       % (episode + 1, N_EPISODES, episode_step + 1, total_reward))
-

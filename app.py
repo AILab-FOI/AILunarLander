@@ -1,4 +1,5 @@
 import os
+import pickle
 
 from fastapi import FastAPI
 from tensorflow import keras
@@ -15,7 +16,7 @@ class EnvVariables(BaseModel):
     variables: list[float]
 
 
-agent = model_training.Agent(state_space=8, action_size=4)
+agent = model_training.Agent(state_space=8, action_size=4, )
 if os.path.exists("saved_model"):
     agent.model = keras.models.load_model('saved_model')
 
@@ -24,5 +25,5 @@ if os.path.exists("saved_model"):
 def get_action(observation: EnvVariables):
     observation = np.asarray(observation.variables)
     state = np.reshape(observation, [1, OBSERVATION_SPACE])
-    action = agent.act(state)
-    return action
+    action = np.argmax(agent.model.predict(state)[0])
+    return int(action)

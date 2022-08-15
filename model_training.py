@@ -19,7 +19,7 @@ class Agent:
         self.gamma = 0.98  # discount rate
         self.epsilon = 1  # exploration rate
         self.epsilon_min = 0.02
-        self.epsilon_decay = 0.98
+        self.epsilon_decay = 0.99
         self.learning_rate = 1e-3
         self.model = self._build_model()
 
@@ -119,16 +119,9 @@ if __name__ == "__main__":
             # Takes action and calculates the total reward
             observation, reward, done, _ = env.step(action)
             total_reward += reward
-            test = observation.tolist()
-            print(test)
-            print(type(test))
-            test = np.asarray(test)
-            print('test_observ: ', test, test.shape)
-            print('observation: ', observation, observation.shape)
 
             # Gets the next state
             next_state = np.reshape(observation, [1, state_space])
-            print('next_state', next_state, next_state.shape)
 
             # Memorizes the experience
             agent.memorize(state, action, reward, next_state, done)
@@ -156,7 +149,7 @@ if __name__ == "__main__":
             max_reward = total_reward
 
     # save model
-    # agent.save_model('saved_model')
+    agent.save_model('saved_model')
 
     # Closes the environment
     env.close()

@@ -31,7 +31,6 @@ if __name__ == "__main__":
 
             response = requests.post(URL, json=data)
             action = int(response.content)
-            print(action)
 
             # Takes action and calculates the total reward
             observation, reward, done, _ = env.step(action)

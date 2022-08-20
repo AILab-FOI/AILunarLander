@@ -7,7 +7,7 @@ if __name__ == "__main__":
 
     # Initializes the environment
     env = gym.make('LunarLander-v2')  # uzimanje enviromenta
-    URL = 'http://127.0.0.1:8000/action'
+    URL = 'http://localhost:8007/action'
 
     # Defines training related constants
     N_EPISODES = 5

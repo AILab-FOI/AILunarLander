@@ -1,14 +1,11 @@
-FROM ubuntu:22.04
+FROM python:3.9.13-bullseye
 
-ENV PATH="/root/miniconda3/bin:${PATH}"
-ARG PATH="/root/miniconda3/bin:${PATH}"
-RUN apt-get update
+RUN apt-get update && apt-get install -y python3-dev python3-pip libssl-dev locales git openssh-server cmake curl gnupg
 
-RUN apt-get install -y wget && rm -rf /var/lib/apt/lists/*
+RUN pip3 install fastapi[all] gym[all] tensorflow keras pydantic
 
-RUN wget \
-    https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-    && mkdir /root/.conda \
-    && bash Miniconda3-latest-Linux-x86_64.sh -b \
-    && rm -f Miniconda3-latest-Linux-x86_64.sh
-RUN conda --version
+COPY . .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8007"]

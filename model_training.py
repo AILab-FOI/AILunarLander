@@ -45,7 +45,6 @@ class Agent:
         if self.batch_size > len(self.memory):
             return
 
-        # Randomly sample a batch from the memory
         random_batch = random.sample(self.memory, self.batch_size)
 
         state = np.zeros((self.batch_size, self.state_space))
@@ -59,7 +58,6 @@ class Agent:
             next_state[i] = random_batch[i][3]
             done.append(random_batch[i][4])
 
-        # Batch prediction
         target = self.model.predict(state)
         target_next = self.model(next_state)
 
@@ -82,17 +80,14 @@ class Agent:
 
 if __name__ == "__main__":
 
-    # Initializes the environment
-    env = gym.make('LunarLander-v2')  # uzimanje enviromenta
+    env = gym.make('LunarLander-v2')
 
-    # Defines training related constants
     n_episodes = 300
-    num_episode_steps = env.spec.max_episode_steps  # constant value
+    num_episode_steps = env.spec.max_episode_steps
     action_size = env.action_space.n
     state_space = env.observation_space.shape[0]
     max_reward = 0
 
-    # Creates an agent
     agent = Agent(state_space=state_space, action_size=action_size)
 
     if os.path.exists("saved_model"):
@@ -100,36 +95,26 @@ if __name__ == "__main__":
         print('model_loaded')
 
     for episode in range(n_episodes):
-        # Defines the total reward per episode
         total_reward = 0
 
-        # Resets the environment
         observation = env.reset()
 
-        # Gets the state
         state = np.reshape(observation, [1, state_space])
 
         for episode_step in range(num_episode_steps):
-            # Renders the screen after new environment observation
             env.render(mode="human")
 
-            # Gets a new action
             action = agent.act(state)
 
-            # Takes action and calculates the total reward
             observation, reward, done, _ = env.step(action)
             total_reward += reward
 
-            # Gets the next state
             next_state = np.reshape(observation, [1, state_space])
 
-            # Memorizes the experience
             agent.memorize(state, action, reward, next_state, done)
 
-            # Updates the network weights
             agent.experience_replay()
 
-            # Updates the state
             state = next_state
 
             if done:
@@ -141,15 +126,11 @@ if __name__ == "__main__":
                 print("Episode %d/%d timed out at %d with total reward of %f."
                       % (episode + 1, n_episodes, episode_step + 1, total_reward))
 
-        # Updates the epsilon value
         agent.epsilon = max(agent.epsilon_min, agent.epsilon * agent.epsilon_decay)
 
-        # Saves the network weights
         if total_reward >= max_reward:
             max_reward = total_reward
 
-    # save model
     agent.save_model('saved_model')
 
-    # Closes the environment
     env.close()

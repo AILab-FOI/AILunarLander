@@ -6,6 +6,6 @@ RUN pip3 install fastapi[all] gym[all] tensorflow keras pydantic
 
 COPY . .
 
-EXPOSE 8000
+EXPOSE 8007
 
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8007"]
